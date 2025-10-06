@@ -19,6 +19,9 @@ import java.util.UUID;
 
 @RestController
 public class CartController {
+
+    //todo repari CartController (vielleicht TeswtController für queue)
+
     @Autowired
     private ICartService cartService;
     @Autowired
@@ -40,9 +43,9 @@ public class CartController {
     @DeleteMapping("/cart/{idItem}")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody Cart removeItemFromCart(@PathVariable ("idItem") UUID idtem) throws ItemNotFoundException {
-        Item item = cartService.getItmeById(idtem);
+        Item item = cartService.getItemById(idtem);
         cartProducer.changeAmountOfProducts(item, 1);
-        Cart returnCart = cartService.deleteItemFromCart(item);
+        Cart returnCart = cartService.deleteItemFromCart(idtem);
         return returnCart;
     }
 }

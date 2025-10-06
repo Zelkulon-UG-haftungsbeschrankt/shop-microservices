@@ -6,30 +6,48 @@
  **/
 package com.zelkulon.cart_microservice.port.consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zelkulon.cart_microservice.core.domain.services.interfaces.ICartService;
-import com.zelkulon.cart_microservice.port.dto.OrderDTO;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CartConsumer {
-    private ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    private ICartService cartService;
 
-    @RabbitListener(queues = {"orderToCart"})
-    public void consume(String message){
-        OrderDTO orderDTO = null;
-        try{
-            orderDTO = objectMapper.readValue(message, OrderDTO.class);
-        }catch(JsonProcessingException e){
-            throw new RuntimeException(e);
-        }
-        cartService.removeAllItems(orderDTO.getUsername());
+    @Value("orderToCart")
+    private String exchange;
+
+    @Value("cart_toProduct")
+    private String routingKey;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CartConsumer.class);
+
+    private final RabbitTemplate rabbitTemplate;
+
+    public CartConsumer(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
     }
+
+    public void sendMessage(String message) {
+        LOGGER.info("Sending message : {}", message);
+        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    }
+
+//    private ObjectMapper mapper = new ObjectMapper();
+//    @Autowired
+//    ICartService cartService;
+//
+//    @RabbitListener(queues = {"orderToCart"})
+//    public void consume(String message){
+//        OrderDTO orderDTO = null;
+//        try{
+//            orderDTO = mapper.readValue(message, OrderDTO.class);
+//        }catch(JsonProcessingException e){
+//            throw new RuntimeException(e);
+//        }
+//        cartService.removeAllItems(orderDTO.getUsername());
+//    }
 
 
 }

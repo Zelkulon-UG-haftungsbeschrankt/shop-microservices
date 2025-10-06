@@ -14,6 +14,7 @@ import com.zelkulon.cart_microservice.core.domain.services.interfaces.ItemReposi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class CartService implements ICartService {
     private final ItemRepository itemRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CartService.class);
 
-    public CartService(ItemRepository itemRepository) {
+    CartService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
@@ -31,28 +32,47 @@ public class CartService implements ICartService {
         return itemRepository.findByUsername(username);
     }
 
+    private BigDecimal getTotalAmountOfItemList(List<Item> items) {
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (int i = 0; i < items.size(); i++) {
+            totalAmount = totalAmount.add(items.get(i).getProductPrice());
+        }
+        return totalAmount;
+    }
+
+
     @Override
     public Cart getCartByUsername(String username) {
-        return null;
+        List<Item> items = getItemsByUsername(username);
+        BigDecimal totalAmount = this.getTotalAmountOfItemList(items);
+        return new Cart(items,totalAmount);
     }
 
     @Override
-    public Item getItmeById(UUID id) {
-        return null;
+    public Item getItemById(UUID id) {
+        return itemRepository.getReferenceById(id); // keine deprecated getById
     }
 
     @Override
     public Cart addItemToCart(Item item, String username) {
-        return null;
+        item.setUsername(username);
+        itemRepository.save(item);
+        return getCartByUsername(username);
     }
 
     @Override
     public void removeAllItems(String username) {
-
+        List<Item> itemsList = itemRepository.findByUsername(username);
+        for (int i = 0; i < itemsList.size(); i++) {
+            itemRepository.deleteById(itemsList.get(i).getId());
+        }
     }
 
     @Override
-    public Cart deleteItemFromCart(Item item) throws ItemNotFoundException {
-        return null;
+    public Cart deleteItemFromCart(UUID id) throws ItemNotFoundException {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException());
+        itemRepository.deleteById(id);
+        return getCartByUsername(item.getUsername());
     }
 }

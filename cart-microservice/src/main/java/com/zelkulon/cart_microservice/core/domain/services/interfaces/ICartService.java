@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public interface ICartService {
     Cart getCartByUsername(String username);
-    Item getItmeById(UUID id);
+    Item getItemById(UUID id);
     Cart addItemToCart(Item item, String username);
     void removeAllItems(String username);
 
-    Cart deleteItemFromCart(Item item) throws ItemNotFoundException;
+    Cart deleteItemFromCart(UUID id) throws ItemNotFoundException;
 
 }
