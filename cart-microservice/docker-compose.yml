@@ -1,0 +1,39 @@
+services:
+  database:
+    image: postgres:12
+    container_name: postgresCart
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./:/app/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - internal
+
+  app:
+    container_name: cart-microservice
+    command: java -jar target/cart-microservice-0.0.1-SNAPSHOT.jar
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8080"
+    depends_on:
+      - database
+    volumes:
+      - ./:/app/app
+    links:
+      - database
+    networks:
+      - internal
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/postgres
+      - spring_rabbitmq_host=rabbitmq-container
+      - spring_rabbitmq_port=5672
+
+networks:
+  internal:
+    name: internal

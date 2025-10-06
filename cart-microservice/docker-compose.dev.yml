@@ -1,0 +1,14 @@
+services:
+  database:
+    image: postgres:12
+    container_name: postgresCart
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./:/app/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - internal
