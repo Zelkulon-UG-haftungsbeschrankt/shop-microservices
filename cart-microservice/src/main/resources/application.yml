@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: cart-microservice
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgres://localhost:3320/cart
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  rabbitmq:
+    host: localhost
+    port: 5672
