@@ -4,9 +4,10 @@
  * for order-microservice
  * path to this file is: src/main/java/com/zelkulon/order_microservice/port/dto
  **/
-package com.zelkulon.order_microservice.port.dto;
+package com.zelkulon.order_microservice.port.dtoMapper;
 
 import com.zelkulon.order_microservice.core.domain.model.Order;
+import com.zelkulon.order_microservice.port.dto.OrderDTO;
 import org.springframework.stereotype.Service;
 
 @Service

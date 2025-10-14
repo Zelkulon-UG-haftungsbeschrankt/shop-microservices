@@ -6,5 +6,5 @@
  **/
 package com.zelkulon.order_microservice.core.domain.services.exception;
 
-public class NotFoundByOrderIdException {
+public class NotFoundByOrderIdException extends Throwable {
 }

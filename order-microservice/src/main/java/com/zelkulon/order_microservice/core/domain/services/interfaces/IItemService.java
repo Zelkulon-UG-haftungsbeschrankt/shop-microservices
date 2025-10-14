@@ -6,5 +6,13 @@
  **/
 package com.zelkulon.order_microservice.core.domain.services.interfaces;
 
+import com.zelkulon.order_microservice.core.domain.model.Item;
+
+import java.util.List;
+import java.util.UUID;
+
 public interface IItemService {
+    public List<Item> addItemToOrder(List<Item> items);
+
+    public List<Item> getItemsForOrderId(UUID id);
 }

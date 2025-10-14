@@ -6,5 +6,12 @@
  **/
 package com.zelkulon.order_microservice.core.domain.services.interfaces;
 
+import com.zelkulon.order_microservice.core.domain.model.OrderContact;
+import com.zelkulon.order_microservice.core.domain.services.exception.NotFoundByOrderIdException;
+
+import java.util.UUID;
+
 public interface IOrderContactService {
+    public OrderContact getOrderContactByOrderId(UUID orderId) throws NotFoundByOrderIdException;
+    public OrderContact createOrderContact(OrderContact orderContact);
 }

@@ -6,5 +6,14 @@
  **/
 package com.zelkulon.order_microservice.port.rabbitConsumer;
 
-public class OderConsumer {
+import com.zelkulon.order_microservice.port.dto.OrderDTO;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderConsumer {
+    @RabbitListener(queues = {"self"})
+    public void consume(String message) {
+
+    }
 }

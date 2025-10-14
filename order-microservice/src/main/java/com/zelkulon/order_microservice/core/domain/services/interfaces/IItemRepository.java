@@ -6,5 +6,14 @@
  **/
 package com.zelkulon.order_microservice.core.domain.services.interfaces;
 
-public interface IItemRepository {
+import com.zelkulon.order_microservice.core.domain.model.Item;
+import org.hibernate.validator.constraints.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface IItemRepository extends JpaRepository<Item, UUID> {
+    List<Item> findByOrderId(java.util.UUID orderId);
 }

@@ -6,5 +6,9 @@
  **/
 package com.zelkulon.order_microservice.port.user.exception;
 
-public class OrderNotFoundException {
+import java.util.UUID;
+
+public class OrderNotFoundException extends Throwable{
+    public OrderNotFoundException(UUID id) {
+    }
 }
