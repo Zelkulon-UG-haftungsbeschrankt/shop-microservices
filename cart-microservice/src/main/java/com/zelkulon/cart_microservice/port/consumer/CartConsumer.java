@@ -8,6 +8,7 @@ package com.zelkulon.cart_microservice.port.consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class CartConsumer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    @RabbitListener
     public void sendMessage(String message) {
         LOGGER.info("Sending message : {}", message);
         rabbitTemplate.convertAndSend(exchange, routingKey, message);

@@ -13,13 +13,14 @@ import com.zelkulon.cart_microservice.core.domain.services.interfaces.ICartServi
 import com.zelkulon.cart_microservice.core.domain.services.interfaces.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 //todo
-
+@Service
 public class CartService implements ICartService {
     private final ItemRepository itemRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(CartService.class);
