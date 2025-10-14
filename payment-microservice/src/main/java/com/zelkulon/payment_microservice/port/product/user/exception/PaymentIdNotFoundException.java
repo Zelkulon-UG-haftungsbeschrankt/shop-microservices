@@ -6,8 +6,10 @@
  **/
 package com.zelkulon.payment_microservice.port.product.user.exception;
 
+import java.util.UUID;
+
 public class PaymentIdNotFoundException extends RuntimeException {
-    public PaymentIdNotFoundException(String message) {
-        super(message);
+    public PaymentIdNotFoundException(UUID paymentId) {
+        super("Payment with orderId " + paymentId + " not found");
     }
 }

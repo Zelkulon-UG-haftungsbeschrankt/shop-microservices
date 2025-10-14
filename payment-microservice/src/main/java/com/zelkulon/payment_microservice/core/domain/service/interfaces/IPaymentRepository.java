@@ -6,5 +6,14 @@
  **/
 package com.zelkulon.payment_microservice.core.domain.service.interfaces;
 
-public interface IPaymentRepository {
+import com.zelkulon.payment_microservice.core.domain.model.Payment;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+public interface IPaymentRepository extends CrudRepository<Payment, UUID> {
+    List<Payment> findByOrderId(UUID orderId);
 }

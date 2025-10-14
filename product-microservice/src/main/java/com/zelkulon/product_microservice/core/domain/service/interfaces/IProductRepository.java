@@ -10,4 +10,5 @@ import com.zelkulon.product_microservice.core.domain.model.Product;
 import org.springframework.data.repository.CrudRepository;
 
 public interface IProductRepository extends CrudRepository<Product, Integer> {
+    Product getProductById(Integer id);
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PriceChangeConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceChangeConsumer.class);
 
-    @RabbitListener(queues = {"items"})
+    @RabbitListener(queues = {"item"})
     public void consume(String message) {
         LOGGER.info(String.format("Received Message : %s", message ));
         // TODO: Business Logic

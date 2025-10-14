@@ -7,4 +7,8 @@
 package com.zelkulon.payment_microservice.core.domain.model;
 
 public enum PaymentStatus {
+    PENDING,
+    PROCESSING,
+    SUCCESS,
+    FAILED
 }

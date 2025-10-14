@@ -41,7 +41,7 @@ public class ProductService implements IProductService {
     //TODO getProduct
     @Override
     public Product getProduct(int id) {
-        return null;
+        return productRepository.getProductById(id);
     }
 
     @Override

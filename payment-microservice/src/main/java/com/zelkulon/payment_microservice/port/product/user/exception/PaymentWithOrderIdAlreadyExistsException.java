@@ -6,8 +6,10 @@
  **/
 package com.zelkulon.payment_microservice.port.product.user.exception;
 
+import java.util.UUID;
+
 public class PaymentWithOrderIdAlreadyExistsException extends RuntimeException {
-    public PaymentWithOrderIdAlreadyExistsException(String message) {
-        super(message);
+    public PaymentWithOrderIdAlreadyExistsException(UUID paymentId) {
+        super("Payment with order id " + paymentId + " already exists");
     }
 }
