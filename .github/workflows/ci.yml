@@ -16,38 +16,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-          - name: Set up Java environmetn
-            uses: actions/setup-java@v4
-            with:
-              distribution: temurin
-              java-version: "21"
-              cache: maven
+      - name: Set up Java environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
 
-          - name: Build jar (and skip tests)
-            run: mvn-B -DskipTests clean Package
+      - name: Build jar (and skip tests)
+        run: mvn-B -DskipTests clean Package
 
-          - name: Set up Docker Compose
-            uses: docker/setup-compose-action@v1
-            with:
-              version: 3.9
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: 3.9
 
-          - name: Compose up (build and check health)
-            run: |
-              docker compose -f docker-compose.yml \
-                             -f docker-compose.ci.override.yml \
-                             up -d --build --wait
+      - name: Compose up (build and check health)
+        run: |
+          docker compose -f docker-compose.yml \
+                         -f docker-compose.ci.override.yml \
+                         up -d --build --wait
 
-          - name: Smoke check HTTP :8080
-            run: |
-              for i in $(seq 1 40); do
-                if curl -fsS http_//localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
-                  exit
-                fi
-              done
-              echo "App not responding on :8080"
-              docker compose logs
-              exit 1
+      - name: Smoke check HTTP :8080
+        run: |
+          for i in $(seq 1 40); do
+            if curl -fsS http_//localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
+              exit 0
+            fi
+          done
+          echo "App not responding on :8080"
+          docker compose logs
+          exit 1
 
-          - name: Teardown
-            if: always()
-            run: docker compose -f docker-compose.yml -f docker-compose.ci.override.yml down -v
+      - name: Teardown
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.override.yml down -v
