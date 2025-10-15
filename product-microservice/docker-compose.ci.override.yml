@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  database:
+    ports: [] # leer für CI
+    healthcheck:
+      test: ["CMD-SHELL", "pg-isready -U postgres -d postgres -h 127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  rabbitmq-container:
+    ports: [] #leer für CI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  app:
+    depends_on:
+      database:
+        condition: service_healthy
+      rabbitmq-container:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
