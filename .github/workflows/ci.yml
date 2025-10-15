@@ -37,6 +37,7 @@ jobs:
           docker compose -f docker-compose.yml \
                          -f docker-compose.ci.override.yml \
                          up -d --build --wait
+          docker compose ps
 
       - name: Smoke check HTTP :8080
         run: |
