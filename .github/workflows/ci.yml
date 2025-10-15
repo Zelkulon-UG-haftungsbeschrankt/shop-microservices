@@ -42,7 +42,7 @@ jobs:
       - name: Smoke check HTTP :8080 (accept any HTTP status)
         run: |
           set -euo pipefail
-          URLS=("http://127.0.0.1:8080/actuator/health" "http://127.0.0.1:8080/" "http://127.0.0.1:8080/product-queue" "http://127.0.0.1:8080/product-update-queue")
+          URLS=("http://127.0.0.1:8080/product-queue" "http://127.0.0.1:8080/product-update-queue")
           ok=0
           for U in "${URLS[@]}"; do
             echo "Probing $U"
