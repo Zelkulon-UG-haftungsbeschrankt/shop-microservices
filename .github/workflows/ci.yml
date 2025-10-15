@@ -4,6 +4,7 @@ name: CI Compose Smoke Test
 on:
   push:
     paths:
+      - ".github/workflows/ci.yml"
       - "product-microservice/**"
 
 jobs:
@@ -24,12 +25,12 @@ jobs:
           cache: maven
 
       - name: Build jar (and skip tests)
-        run: mvn-B -DskipTests clean Package
+        run: mvn -B -DskipTests clean package
 
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v1
         with:
-          version: 3.9
+          version: latest
 
       - name: Compose up (build and check health)
         run: |
@@ -40,7 +41,7 @@ jobs:
       - name: Smoke check HTTP :8080
         run: |
           for i in $(seq 1 40); do
-            if curl -fsS http_//localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
+            if curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
               exit 0
             fi
           done

@@ -14,8 +14,6 @@ docker network create internal
 docker compose up --build
 ```
 
-workflow test on push
-
 ### RabbitMQ
 The Product-Microservice starts the RabbitMQ Management
 
