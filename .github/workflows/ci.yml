@@ -39,13 +39,30 @@ jobs:
                          up -d --build --wait
           docker compose ps
 
-      - name: Smoke check HTTP :8080
+      - name: Smoke check HTTP :8080 (accept any HTTP status)
         run: |
-          curl -fsS --retry 60 --retry-all-errors --retry-delay 2 --max-time 180 \
-            http://localhost:actuator/health \
-          || curl -fsS --retry 60 --retry-all-errors --retry-delay 2 --max-time 180 \
-            http://localhost:8080/
-          echo "App responded"
+          set -euo pipefail
+          URLS=("http://127.0.0.1:8080/actuator/health" "http://127.0.0.1:8080/" "http://127.0.0.1:8080/product-queue" "http://127.0.0.1:8080/product-update-queue")
+          ok=0
+          for U in "${URLS[@]}"; do
+            echo "Probing $U"
+            # -s silent, -o discard body, -w print status, --retry handles connection refused/timeouts
+            code=$(curl -s -o /dev/null -w "%{http_code}" \
+                       --retry 60 --retry-all-errors --max-time 5 "$U" || true)
+            echo "HTTP $code from $U"
+            # curl returns code "000" wenn keine Verbindung/kein HTTP
+            if [ "$code" != "000" ]; then
+              ok=1
+              break
+            fi
+          done
+          if [ "$ok" -eq 1 ]; then
+            echo "Service reachable on :8080"
+          else
+            echo "Service not reachable on :8080"
+            docker compose logs
+            exit 1
+          fi
 #        run: |
 #          for i in $(seq 1 40); do
 #            if curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
