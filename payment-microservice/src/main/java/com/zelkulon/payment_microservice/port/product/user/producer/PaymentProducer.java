@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zelkulon.payment_microservice.core.domain.model.Payment;
 import com.zelkulon.payment_microservice.port.product.dto.PaymentDTO;
 import com.zelkulon.payment_microservice.port.product.dtomapper.PaymentDTOMappingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentProducer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PaymentProducer.class);
     @Autowired
     private PaymentDTOMappingService paymentDTOMappingService;
 
@@ -30,6 +33,11 @@ public class PaymentProducer {
 
     public PaymentProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public void sendMessage(String message) {
+        LOGGER.info("Sending message: {}", message);
+        rabbitTemplate.convertAndSend(exchange, "email_payment_confirmation", message);
     }
 
     public void sendMessageToEmailService(Payment payment) {

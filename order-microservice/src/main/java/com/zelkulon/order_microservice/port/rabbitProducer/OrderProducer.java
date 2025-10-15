@@ -20,17 +20,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderProducer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderProducer.class);
     @Value("order_exchange")
     private String exchange;
     @Autowired
     private OrderDTOMapper orderDTOMapper;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderProducer.class);
-
     private final RabbitTemplate rabbitTemplate;
 
     public OrderProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+    public void sendMessage(String message) {
+        LOGGER.info("Sending message: {}", message);
+        rabbitTemplate.convertAndSend(exchange, "*", message);
     }
 
     public void sendToAll(Order order){
@@ -42,6 +46,6 @@ public class OrderProducer {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        rabbitTemplate.convertAndSend(exchange, "'", message);
+        rabbitTemplate.convertAndSend(exchange, "*", message);
     }
 }

@@ -1,16 +1,18 @@
-name: CI Cart Compose Smoke Test
+# https://github.com/marketplace/actions/docker-setup-compose
+name: CI Order Compose Smoke Test
+
 on:
   push:
     paths:
-      - ".github/workflows/ci_cart_microservice.yml"
-      - "cart-microservice/**"
+      - ".github/workflows/ci_order_microservice.yml"
+      - "order-microservice/**"
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: cart-microservice
+        working-directory: order-microservice
 
     steps:
       - uses: actions/checkout@v4
@@ -37,10 +39,10 @@ jobs:
                          up -d --build --wait
           docker compose ps
 
-      - name: Smoke check HTTP :8086 (accept any HTTP status)
+      - name: Smoke check HTTP :8083 (accept any HTTP status)
         run: |
           set -euo pipefail
-          URLS=("http://127.0.0.1:8086/cart-queue" "http://127.0.0.1:8086/cart-queue1" "http://127.0.0.1:8086/cart-queue2")
+          URLS=("http://127.0.0.1:8083/order-queue" "http://127.0.0.1:8083/order-queue1" "http://127.0.0.1:8083/order-queue2")
           ok=0
           for U in "${URLS[@]}"; do
             echo "Probing $U"
@@ -55,21 +57,21 @@ jobs:
             fi
           done
           if [ "$ok" -eq 1 ]; then
-            echo "Service reachable on :8086"
+            echo "Service reachable on :8083"
           else
-            echo "Service not reachable on :8086"
+            echo "Service not reachable on :8083"
             docker compose logs
             exit 1
           fi
-      #        run: |
-      #          for i in $(seq 1 40); do
-      #            if curl -fsS http://localhost:8086/actuator/health || curl -fsS http://localhost:8086/; then
-      #              exit 0
-      #            fi
-      #          done
-      #          echo "App not responding on :8086"
-      #          docker compose logs
-      #          exit 1
+#        run: |
+#          for i in $(seq 1 40); do
+#            if curl -fsS http://localhost:8083/actuator/health || curl -fsS http://localhost:8083/; then
+#              exit 0
+#            fi
+#          done
+#          echo "App not responding on :8083"
+#          docker compose logs
+#          exit 1
 
       - name: Teardown
         if: always()
