@@ -32,7 +32,7 @@ jobs:
         with:
           version: latest
 
-      - name: Compose up (build and check health)
+      - name: Compose up (build and wait)
         run: |
           docker compose -f docker-compose.yml \
                          -f docker-compose.ci.override.yml \
@@ -41,14 +41,20 @@ jobs:
 
       - name: Smoke check HTTP :8080
         run: |
-          for i in $(seq 1 40); do
-            if curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
-              exit 0
-            fi
-          done
-          echo "App not responding on :8080"
-          docker compose logs
-          exit 1
+          curl -fsS --retry 60 --retry-all-errors --retry-delay 2 --max-time 180 \
+            http://localhost:actuator/health \
+          || curl -fsS --retry 60 --retry-all-errors --retry-delay 2 --max-time 180 \
+            http://localhost:8080/
+          echo "App responded"
+#        run: |
+#          for i in $(seq 1 40); do
+#            if curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
+#              exit 0
+#            fi
+#          done
+#          echo "App not responding on :8080"
+#          docker compose logs
+#          exit 1
 
       - name: Teardown
         if: always()

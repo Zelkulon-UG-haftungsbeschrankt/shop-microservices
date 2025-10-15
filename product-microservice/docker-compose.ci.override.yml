@@ -4,7 +4,7 @@ services:
     ports: [] # leer für CI
     environment:
       POSTGRES_USER: postgres
-      POSTGRES:PASSWORD: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres -h 127.0.0.1"]
@@ -30,9 +30,14 @@ services:
         SPRING_DATASOURCE_USERNAME: postgres
         SPRING_DATASOURCE_PASSWORD: postgres
         spring_rabbitmq_host: rabbitmq-container
-        spring_rabbitmq_port: 5672
+        spring_rabbitmq_port: "5672"
     healthcheck:
-      test: [ "NONE" ]
+      # DUMMY HEALTHCHECK, für den --wait parameter, es wird später mit curl getestet
+      test: [ "CMD", "true" ]
+      interval: 1s
+      timeout: 1s
+      retries: 1
+      start_period: 1s
 #    healthcheck:
 #      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080"]
 #      interval: 10s
