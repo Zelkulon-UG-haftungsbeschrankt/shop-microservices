@@ -33,6 +33,11 @@ public class CartProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    public void sendMessage(String message) {
+        LOGGER.info("Sending message: {}", message);
+        rabbitTemplate.convertAndSend(exchange, "cart_ToProduct", message);
+    }
+
     public void changeAmountOfProducts(Item item, int diffenrence){
         ProductChangeDTO productChangeDTO = mapper.getProductChangeDTO(item,diffenrence);
         ObjectMapper objectMapper = new ObjectMapper();

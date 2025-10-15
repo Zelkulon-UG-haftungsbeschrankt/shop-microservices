@@ -1,0 +1,76 @@
+name: CI Cart Compose Smoke Test
+on:
+  push:
+    paths:
+      - ".github/workflows/ci_cart_microservice.yml"
+      - "cart-microservice/**"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cart-microservice
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build jar (and skip tests)
+        run: mvn -B -DskipTests clean package
+
+      - name: Set up Docker Compose
+        uses: docker/setup-compose-action@v1
+        with:
+          version: latest
+
+      - name: Compose up (build and wait)
+        run: |
+          docker compose -f docker-compose.yml \
+                         -f docker-compose.ci.override.yml \
+                         up -d --build --wait
+          docker compose ps
+
+      - name: Smoke check HTTP :8086 (accept any HTTP status)
+        run: |
+          set -euo pipefail
+          URLS=("http://127.0.0.1:8086/cart-queue" "http://127.0.0.1:8086/cart-queue1" "http://127.0.0.1:8086/cart-queue2")
+          ok=0
+          for U in "${URLS[@]}"; do
+            echo "Probing $U"
+            # -s silent, -o discard body, -w print status, --retry handles connection refused/timeouts
+            code=$(curl -s -o /dev/null -w "%{http_code}" \
+                       --retry 60 --retry-all-errors --max-time 5 "$U" || true)
+            echo "HTTP $code from $U"
+            # curl returns code "000" wenn keine Verbindung/kein HTTP
+            if [ "$code" != "000" ]; then
+              ok=1
+              break
+            fi
+          done
+          if [ "$ok" -eq 1 ]; then
+            echo "Service reachable on :8080"
+          else
+            echo "Service not reachable on :8080"
+            docker compose logs
+            exit 1
+          fi
+      #        run: |
+      #          for i in $(seq 1 40); do
+      #            if curl -fsS http://localhost:8080/actuator/health || curl -fsS http://localhost:8080/; then
+      #              exit 0
+      #            fi
+      #          done
+      #          echo "App not responding on :8080"
+      #          docker compose logs
+      #          exit 1
+
+      - name: Teardown
+        if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.ci.override.yml down -v
