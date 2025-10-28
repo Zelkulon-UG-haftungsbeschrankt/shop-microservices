@@ -32,7 +32,7 @@ jobs:
 
       - name: Compose up (build and wait)
         run: |
-          docker compose -f docker-compose.yml \
+          docker compose -f docker-compose.disabled.yml \
                          -f docker-compose.ci.override.yml \
                          up -d --build --wait
           docker compose ps
