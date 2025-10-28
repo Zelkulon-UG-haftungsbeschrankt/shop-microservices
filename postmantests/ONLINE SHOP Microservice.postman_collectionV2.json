@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "d7d95ccf-e393-4dac-a5f0-881da23c91cf",
+		"name": "ONLINE SHOP Microservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "47648370",
+		"_collection_link": "https://harun-697b9080-9971263.postman.co/workspace/Harun-Dastekin's-Workspace~cde96b41-5203-4d61-8234-77f1ffe50ce7/collection/47648370-d7d95ccf-e393-4dac-a5f0-881da23c91cf?action=share&source=collection_link&creator=47648370"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": []
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "POSTCART",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"d08d53aa-30a1-4d60-b93c-8f2e1b6ec9e2\",\n  \"productName\": \"Premium Fotodruck A4\",\n  \"productPrice\": 4.99,\n  \"imageLink\": \"https://cdn.zelkulon.com/images/products/fotodruck-a4.jpg\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8082/cart?username=johndoe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"cart"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "johndoe"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "POSTPAYMENT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"7c2b1e40-5d9e-4b9a-b3cd-9d8e1b34c1a1\",\n  \"username\": \"harun\",\n  \"amount\": 49.99,\n  \"status\": \"PENDING\",\n  \"method\": \"VORKASSE\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8084/payment"
+					},
+					"response": []
+				},
+				{
+					"name": "GETbyorderidPAYMENT",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"7c2b1e40-5d9e-4b9a-b3cd-9d8e1b34c1a1\",\n  \"username\": \"harun\",\n  \"amount\": 49.99,\n  \"status\": \"PENDING\",\n  \"method\": \"VORKASSE\"\n}\n"
+						},
+						"url": "http://localhost:8084/payment/7c2b1e40-5d9e-4b9a-b3cd-9d8e1b34c1a1"
+					},
+					"response": []
+				},
+				{
+					"name": "PUTSTATUSbyOrderIdPAYMENT",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"SUCCESS\""
+						},
+						"url": "http://localhost:8084/paymentStatus/3e80dd9f-a6c9-4872-8653-952058a62534"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "POSTORDER",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderContact\": {\n    \"gender\": \"Herr\",\n    \"firstName\": \"Harun\",\n    \"lastName\": \"Dastekin\",\n    \"street\": \"Musterstraße\",\n    \"houseNumber\": \"42A\",\n    \"postalCode\": \"12345\",\n    \"city\": \"Berlin\",\n    \"email\": \"harun@example.com\"\n  },\n  \"items\": [\n    {\n      \"productId\": \"c4a5d8b7-2d4e-4e7b-a8e7-34a9b2c6fabc\",\n      \"productName\": \"Visitenkarten Premium 100 Stück\",\n      \"price\": 19.99\n    },\n    {\n      \"productId\": \"5b1fcd21-9f62-4c8a-8a6c-11c51c3a95a9\",\n      \"productName\": \"Flyer A5 Hochglanz 250g\",\n      \"price\": 29.99\n    }\n  ],\n  \"orderRegistry\": {\n    \"username\": \"harun\",\n    \"totalAmount\": 49.98\n  },\n  \"totalAmount\": 49.98\n}\n"
+						},
+						"url": {
+							"raw": "http://localhost:8083/v1/order?username=harun",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"v1",
+								"order"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "harun"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GETORDERbyOrderId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8083/v1/id/8766cd75-5499-4562-af61-c235580d644e"
+					},
+					"response": []
+				},
+				{
+					"name": "GETORDERbyUsername",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8083/v1/username/harun"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GETALLPRODUCTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/products"
+			},
+			"response": []
+		},
+		{
+			"name": "CREATPRODUCT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Mein zweiter Post\",\n    \"description\": \"mein-zweiter-post\",\n    \"price\": \"Etwas Längereinhalt damit ein weitere test für die db funzt!\",\n    \"details\": \"Kurzfassung zweiter test\",\n    \"count\": \"2\",\n    \"imageLink\":\"www.test.de\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/product"
+			},
+			"response": []
+		},
+		{
+			"name": "GETPRODUCT1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/product/1"
+			},
+			"response": []
+		}
+	]
+}
