@@ -1,5 +1,23 @@
 ![zelkulon_onlineshop_microservce](zelkulon_onlineshop_microservice_ecosystem.png)
 
+im Root verzeichnis 
+
+```sh
+docker compose up -d --build 
+
+docker compose down -v
+```
+
+den shop-tester im shop-tester verzeichnis
+
+```sh
+next build --webpack
+
+next start
+```
+
+sonst die postman-collection aus dem postman verzeichnis importieren und drauf los testen!
+
 ### How to start
 * docker-compose build 
 * start database
@@ -21,7 +39,21 @@ First start the Product-Microservice then the others.
 
 * rabbitmq web view: http://localhost:15672
 
+in den application.yml
+für jpa:
 
+```yml
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+```
+
+| Modus             | Beschreibung                                                                                      | Wann verwenden                                                                                 |
+|--------------------|--------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| **create**         | Droppt alle Tabellen bei jedem Start und legt sie neu an. Alle Daten gehen verloren.             | Nur beim **ersten Setup** oder wenn du **bewusst alles löschen** willst.                       |
+| **update**         | Prüft bestehendes Schema und fügt fehlende Spalten automatisch hinzu.                            | Im **Entwicklungsbetrieb** nach Schemaänderungen (z. B. neue Felder wie `imageLink`).           |
+| **none** oder **validate** | Prüft nur Schema oder macht nichts.                                                            | Für **Produktivumgebung** (keine automatischen Änderungen am Schema).                          |
 
 picturesources:
 spring-cloud
